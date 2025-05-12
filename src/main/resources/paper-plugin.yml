@@ -10,4 +10,4 @@ server:
     - name: PlaceholderAPI
       required: true
       load: AFTER
-      join-classpath: false
+      join-classpath: true
