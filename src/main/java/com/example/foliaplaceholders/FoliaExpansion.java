@@ -1,5 +1,7 @@
 package com.example.foliaplaceholders;
 
+import dev.folia.api.FoliaAPI;
+import dev.folia.api.region.Region;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -7,7 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.text.DecimalFormat;
 
 /**
- * PlaceholderAPI expansion для Folia region TPS и MSPT.
+ * PlaceholderAPI expansion для отображения TPS и MSPT региона Folia,
+ * в котором находится игрок.
  */
 public class FoliaExpansion extends PlaceholderExpansion {
 
@@ -30,7 +33,7 @@ public class FoliaExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "folia"; // Идентификатор плейсхолдеров: %folia_region_tps%
+        return "folia"; // Используйте плейсхолдеры с префиксом %folia_...
     }
 
     @Override
@@ -38,8 +41,15 @@ public class FoliaExpansion extends PlaceholderExpansion {
         return plugin.getDescription().getVersion();
     }
 
+    /**
+     * Обработка плейсхолдеров:
+     * - %folia_region_tps%  - TPS региона (округлённый)
+     * - %folia_region_mspt% - MSPT региона (с 2 знаками после запятой)
+     */
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
+        if (player == null) return "";
+
         RegionStats stats = getRegionStatsForPlayer(player);
         if (stats == null) return "";
 
@@ -53,36 +63,47 @@ public class FoliaExpansion extends PlaceholderExpansion {
         }
     }
 
+    /**
+     * Получение статистики региона Folia по локации игрока.
+     * Возвращает null, если регион не найден или API недоступно.
+     */
     private RegionStats getRegionStatsForPlayer(Player player) {
-        if (player == null) {
-            return getDummyStats();
-        }
+        Region region = FoliaAPI.getRegionAt(player.getLocation());
+        if (region == null) return null;
 
-        // TODO: Реализуйте получение реальных данных из Folia API
-        // Пример:
-        // Region region = FoliaAPI.getRegionAt(player.getLocation());
-        // if (region == null) return null;
-        // double tps5s = region.getTps5s();
-        // double mspt5s = region.getMspt5s();
-        // return new RegionStats(tps5s, mspt5s);
+        // Получаем усреднённые значения за 5 секунд
+        double tps5s = region.getTps5s();
+        double mspt5s = region.getMspt5s();
 
-        return getDummyStats();
+        return new RegionStats(tps5s, mspt5s);
     }
 
-    private RegionStats getDummyStats() {
-        return new RegionStats(19.8, 45.0);
-    }
-
+    /**
+     * Окрашивание TPS:
+     * - >=18 зелёный
+     * - >=15 жёлтый
+     * - иначе красный
+     */
     private String colorizeTps(double tps) {
-        String color = tps >= 18 ? "§a" : (tps >= 15 ? "§e" : "§c");
-        return color + df.format(tps);
+        int rounded = (int) Math.round(tps);
+        String color = rounded >= 18 ? "§a" : (rounded >= 15 ? "§e" : "§c");
+        return color + rounded;
     }
 
+    /**
+     * Окрашивание MSPT:
+     * - <=50 зелёный
+     * - <=100 жёлтый
+     * - иначе красный
+     */
     private String colorizeMspt(double mspt) {
         String color = mspt <= 50 ? "§a" : (mspt <= 100 ? "§e" : "§c");
         return color + df.format(mspt);
     }
 
+    /**
+     * Внутренний класс для хранения статистики региона.
+     */
     private static class RegionStats {
         final double tps5s;
         final double mspt5s;
