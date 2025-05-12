@@ -25,7 +25,6 @@ dependencies {
 }
 
 tasks {
-    // Настройка shadowJar
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         archiveBaseName.set("foliaplaceholders")
         archiveVersion.set(version.toString())
@@ -34,13 +33,7 @@ tasks {
         mergeServiceFiles()
     }
 
-    // Регистрация задачи реобфускации shadowJar
-    val reobfShadowJar by registering(io.papermc.paperweight.tasks.ReobfJar::class) {
-        input.set(named("shadowJar").flatMap { it.archiveFile })
-        output.set(layout.buildDirectory.file("libs/foliaplaceholders-reobf.jar"))
-    }
-
     named("build") {
-        dependsOn(reobfShadowJar)
+        dependsOn("reobfJar")
     }
 }
