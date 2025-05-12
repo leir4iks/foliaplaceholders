@@ -82,11 +82,11 @@ public class FoliaExpansion extends PlaceholderExpansion {
     // Заглушка: здесь нужно получить реальные данные из Folia API
     private RegionStats getRegionStatsForPlayer(Player player) {
         // TODO: Реализуйте получение региона игрока и статистики TPS/MSPT из Folia API
-        // Ниже пример заглушки с фиктивными данными
+        // Ниже пример заглушки с фиктивными данными (13 параметров!)
         return new RegionStats(
-                19.8, 19.7, 19.6, 19.5, 19.4, 19.3,
-                45, 48, 50, 52, 55, // MSPT
-                0.35 // Utilization (35%)
+                19.8, 19.7, 19.6, 19.5, 19.4, 19.3,  // TPS 6 значений
+                45, 48, 50, 52, 55, 53,              // MSPT 6 значений
+                0.35                                 // Utilization (35%)
         );
     }
 
