@@ -16,18 +16,17 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    maven("https://jitpack.io") // Добавляем jitpack для FoliaLib
+    maven("https://jitpack.io") // Для FoliaLib
 }
 
 dependencies {
-    // FoliaLib из jitpack, используем implementation, чтобы включить в shadowJar
-    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
+    implementation("com.github.TechnicallyCoded:FoliaLib:main-SNAPSHOT") // FoliaLib с JitPack
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 tasks {
     jar {
-        enabled = false // Отключаем обычный jar, используем только shadowJar
+        enabled = false // Используем shadowJar
     }
 
     shadowJar {
@@ -36,18 +35,13 @@ tasks {
         archiveClassifier.set("")
         archiveExtension.set("jar")
 
-        // Релокация пакетов FoliaLib, чтобы избежать конфликтов
-        relocate("com.tcoded.folialib", "com.example.foliaplaceholders.lib.folialib")
-
-        // Если нужно, можно раскомментировать для PlaceholderAPI (но обычно не обязательно)
-        // relocate("me.clip.placeholderapi", "com.example.foliaplaceholders.lib.placeholderapi")
+        // Релокация FoliaLib (обязательно!)
+        relocate("com.tcoded.folialib", "com.example.foliaplaceholders.shaded.folialib")
 
         mergeServiceFiles()
 
-        // Исключаем зависимости, которые должны быть на сервере (PlaceholderAPI и Folia)
         dependencies {
             exclude(dependency("me.clip:placeholderapi"))
-            exclude(dependency("com.github.technicallycoded:FoliaLib"))
         }
     }
 
