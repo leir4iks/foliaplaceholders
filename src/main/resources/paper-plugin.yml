@@ -4,7 +4,7 @@ main: com.example.foliaplaceholders.Plugin
 authors:
   - leir4iks
 description: PlaceholderAPI expansion for Folia region TPS and MSPT placeholders.
-
+api-version: "1.21"
 server:
   dependencies:
     - name: PlaceholderAPI
