@@ -11,3 +11,5 @@ server:
       required: true
       load: AFTER
       join-classpath: true
+provides:
+  - PlaceholderAPI
