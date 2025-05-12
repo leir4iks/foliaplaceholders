@@ -37,8 +37,7 @@ public class FoliaExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
-        if (player == null) return "";
-
+        // Убрана проверка player == null, чтобы плейсхолдеры работали и без игрока
         RegionStats stats = getRegionStatsForPlayer(player);
         if (stats == null) return "";
 
@@ -79,14 +78,46 @@ public class FoliaExpansion extends PlaceholderExpansion {
         };
     }
 
-    // Заглушка: здесь нужно получить реальные данные из Folia API
+    /**
+     * Здесь нужно реализовать получение реальных данных из Folia API.
+     * Ниже пример-заглушка с демонстрационными значениями.
+     * 
+     * Если player == null, можно вернуть общие данные или null.
+     */
     private RegionStats getRegionStatsForPlayer(Player player) {
+        if (player == null) {
+            // Если хотите, можно вернуть глобальные данные или null
+            return getDummyStats();
+        }
+
         // TODO: Реализуйте получение региона игрока и статистики TPS/MSPT из Folia API
-        // Ниже пример заглушки с фиктивными данными (13 параметров!)
+        // Пример (псевдокод):
+        // Region region = FoliaAPI.getRegionAt(player.getLocation());
+        // if (region == null) return null;
+        //
+        // double tps = region.getTps();
+        // double tps5s = region.getTps5s();
+        // ...
+        // double mspt = region.getMspt();
+        // ...
+        // double util = region.getUtilization();
+        //
+        // return new RegionStats(tps, tps5s, tps15s, tps1m, tps5m, tps15m,
+        //                        mspt, mspt5s, mspt15s, mspt1m, mspt5m, mspt15m,
+        //                        util);
+
+        // Пока возвращаем заглушку с согласованными значениями
+        return getDummyStats();
+    }
+
+    private RegionStats getDummyStats() {
+        // TPS: 19.8, 19.7, 19.6, 19.5, 19.4, 19.3
+        // MSPT: 45, 48, 50, 52, 55, 53
+        // Utilization: 35%
         return new RegionStats(
-                19.8, 19.7, 19.6, 19.5, 19.4, 19.3,  // TPS 6 значений
-                45, 48, 50, 52, 55, 53,              // MSPT 6 значений
-                0.35                                 // Utilization (35%)
+                19.8, 19.7, 19.6, 19.5, 19.4, 19.3,
+                45, 48, 50, 52, 55, 53,
+                0.35
         );
     }
 
@@ -140,14 +171,6 @@ public class FoliaExpansion extends PlaceholderExpansion {
             this.mspt5m = mspt5m;
             this.mspt15m = mspt15m;
             this.utilization = utilization;
-        }
-
-        // Конструктор для заглушки с одинаковыми MSPT значениями
-        public RegionStats(double tps, double tps5s, double tps15s, double tps1m, double tps5m, double tps15m,
-                           double mspt, double utilization) {
-            this(tps, tps5s, tps15s, tps1m, tps5m, tps15m,
-                    mspt, mspt, mspt, mspt, mspt, mspt,
-                    utilization);
         }
     }
 }
