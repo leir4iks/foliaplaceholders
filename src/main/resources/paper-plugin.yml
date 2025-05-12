@@ -1,0 +1,10 @@
+name: FoliaPlaceholders
+version: 1.0.0
+main: com.example.foliaplaceholders.Plugin
+authors: leir4iks
+description: "PlaceholderAPI expansion for Folia region TPS and MSPT placeholders."
+api-version: 1.21
+depend:
+  - PlaceholderAPI
+
+folia-supported: true
