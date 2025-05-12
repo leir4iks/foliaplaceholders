@@ -1,4 +1,4 @@
-package com.example.foliaplaceholders;
+package com.example.foliaregionexpansion;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -6,12 +6,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;
 
-public class FoliaExpansion extends PlaceholderExpansion {
+/**
+ * Плагин расширения PlaceholderAPI для Folia region TPS и MSPT.
+ */
+public class FoliaRegionExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
     private final DecimalFormat df = new DecimalFormat("0.00");
 
-    public FoliaExpansion(JavaPlugin plugin) {
+    public FoliaRegionExpansion(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -22,12 +25,12 @@ public class FoliaExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "YourName";
+        return "YourName"; // Ваш ник
     }
 
     @Override
     public String getIdentifier() {
-        return "folia";
+        return "foliaregion"; // Идентификатор плейсхолдеров: %foliaregion_region_tps%
     }
 
     @Override
@@ -35,94 +38,62 @@ public class FoliaExpansion extends PlaceholderExpansion {
         return plugin.getDescription().getVersion();
     }
 
+    /**
+     * Обработка запроса плейсхолдера.
+     * Поддерживаются:
+     * - region_tps
+     * - region_mspt
+     * 
+     * @param player игрок (может быть null)
+     * @param identifier идентификатор плейсхолдера без префикса
+     * @return строка с заменой или пустая строка
+     */
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
-        // Убрана проверка player == null, чтобы плейсхолдеры работали и без игрока
+        // Получаем статистику региона игрока (если player == null, возвращаем null или глобальные данные)
         RegionStats stats = getRegionStatsForPlayer(player);
         if (stats == null) return "";
 
-        return switch (identifier) {
-            // TPS
-            case "tps" -> formatTps(stats.tps);
-            case "tps_5s" -> formatTps(stats.tps5s);
-            case "tps_15s" -> formatTps(stats.tps15s);
-            case "tps_1m" -> formatTps(stats.tps1m);
-            case "tps_5m" -> formatTps(stats.tps5m);
-            case "tps_15m" -> formatTps(stats.tps15m);
-
-            case "tps_5s_colored" -> colorizeTps(stats.tps5s);
-            case "tps_15s_colored" -> colorizeTps(stats.tps15s);
-            case "tps_1m_colored" -> colorizeTps(stats.tps1m);
-            case "tps_5m_colored" -> colorizeTps(stats.tps5m);
-            case "tps_15m_colored" -> colorizeTps(stats.tps15m);
-
-            // MSPT
-            case "mspt" -> formatMspt(stats.mspt);
-            case "mspt_5s" -> formatMspt(stats.mspt5s);
-            case "mspt_15s" -> formatMspt(stats.mspt15s);
-            case "mspt_1m" -> formatMspt(stats.mspt1m);
-            case "mspt_5m" -> formatMspt(stats.mspt5m);
-            case "mspt_15m" -> formatMspt(stats.mspt15m);
-
-            case "mspt_5s_colored" -> colorizeMspt(stats.mspt5s);
-            case "mspt_15s_colored" -> colorizeMspt(stats.mspt15s);
-            case "mspt_1m_colored" -> colorizeMspt(stats.mspt1m);
-            case "mspt_5m_colored" -> colorizeMspt(stats.mspt5m);
-            case "mspt_15m_colored" -> colorizeMspt(stats.mspt15m);
-
-            // Utilization
-            case "util" -> formatUtil(stats.utilization);
-            case "util_colored" -> colorizeUtil(stats.utilization);
-
-            default -> null;
-        };
+        switch (identifier) {
+            case "region_tps":
+                return colorizeTps(stats.tps5s);
+            case "region_mspt":
+                return colorizeMspt(stats.mspt5s);
+            default:
+                return null;
+        }
     }
 
     /**
-     * Здесь нужно реализовать получение реальных данных из Folia API.
-     * Ниже пример-заглушка с демонстрационными значениями.
+     * Метод получения статистики региона для игрока.
+     * Здесь нужно интегрировать вызовы Folia API для реальных данных.
      * 
-     * Если player == null, можно вернуть общие данные или null.
+     * @param player игрок, для которого нужно получить региональные данные
+     * @return RegionStats с данными или null если данных нет
      */
     private RegionStats getRegionStatsForPlayer(Player player) {
         if (player == null) {
-            // Если хотите, можно вернуть глобальные данные или null
+            // Можно вернуть глобальные данные или null
             return getDummyStats();
         }
 
         // TODO: Реализуйте получение региона игрока и статистики TPS/MSPT из Folia API
-        // Пример (псевдокод):
+        // Пример псевдокода:
         // Region region = FoliaAPI.getRegionAt(player.getLocation());
         // if (region == null) return null;
         //
-        // double tps = region.getTps();
         // double tps5s = region.getTps5s();
-        // ...
-        // double mspt = region.getMspt();
-        // ...
-        // double util = region.getUtilization();
+        // double mspt5s = region.getMspt5s();
         //
-        // return new RegionStats(tps, tps5s, tps15s, tps1m, tps5m, tps15m,
-        //                        mspt, mspt5s, mspt15s, mspt1m, mspt5m, mspt15m,
-        //                        util);
+        // return new RegionStats(tps5s, mspt5s);
 
-        // Пока возвращаем заглушку с согласованными значениями
+        // Пока возвращаем заглушку
         return getDummyStats();
     }
 
     private RegionStats getDummyStats() {
-        // TPS: 19.8, 19.7, 19.6, 19.5, 19.4, 19.3
-        // MSPT: 45, 48, 50, 52, 55, 53
-        // Utilization: 35%
-        return new RegionStats(
-                19.8, 19.7, 19.6, 19.5, 19.4, 19.3,
-                45, 48, 50, 52, 55, 53,
-                0.35
-        );
-    }
-
-    private String formatTps(double tps) {
-        return df.format(tps);
+        // Заглушка: TPS 19.8, MSPT 45.0
+        return new RegionStats(19.8, 45.0);
     }
 
     private String colorizeTps(double tps) {
@@ -130,47 +101,21 @@ public class FoliaExpansion extends PlaceholderExpansion {
         return color + df.format(tps);
     }
 
-    private String formatMspt(double mspt) {
-        return df.format(mspt);
-    }
-
     private String colorizeMspt(double mspt) {
         String color = mspt <= 50 ? "§a" : (mspt <= 100 ? "§e" : "§c");
         return color + df.format(mspt);
     }
 
-    private String formatUtil(double util) {
-        return df.format(util * 100) + "%";
-    }
-
-    private String colorizeUtil(double util) {
-        double percent = util * 100;
-        String color = percent <= 50 ? "§a" : (percent <= 75 ? "§e" : "§c");
-        return color + df.format(percent) + "%";
-    }
-
-    // Внутренний класс для хранения статистики региона
+    /**
+     * Внутренний класс для хранения статистики региона.
+     */
     private static class RegionStats {
-        final double tps, tps5s, tps15s, tps1m, tps5m, tps15m;
-        final double mspt, mspt5s, mspt15s, mspt1m, mspt5m, mspt15m;
-        final double utilization;
+        final double tps5s;
+        final double mspt5s;
 
-        public RegionStats(double tps, double tps5s, double tps15s, double tps1m, double tps5m, double tps15m,
-                           double mspt, double mspt5s, double mspt15s, double mspt1m, double mspt5m, double mspt15m,
-                           double utilization) {
-            this.tps = tps;
+        public RegionStats(double tps5s, double mspt5s) {
             this.tps5s = tps5s;
-            this.tps15s = tps15s;
-            this.tps1m = tps1m;
-            this.tps5m = tps5m;
-            this.tps15m = tps15m;
-            this.mspt = mspt;
             this.mspt5s = mspt5s;
-            this.mspt15s = mspt15s;
-            this.mspt1m = mspt1m;
-            this.mspt5m = mspt5m;
-            this.mspt15m = mspt15m;
-            this.utilization = utilization;
         }
     }
 }
