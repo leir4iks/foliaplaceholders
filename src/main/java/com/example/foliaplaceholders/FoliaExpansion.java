@@ -2,6 +2,8 @@ package com.example.foliaplaceholders;
 
 import dev.folia.api.FoliaAPI;
 import dev.folia.api.region.Region;
+import com.example.foliaplaceholders.lib.folialib.api.FoliaLib;
+import com.example.foliaplaceholders.lib.folialib.api.region.Region;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
