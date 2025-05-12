@@ -1,17 +1,13 @@
 package com.example.foliaplaceholders;
 
-import com.example.foliaplaceholders.shaded.folialib.api.FoliaLib;
-import com.example.foliaplaceholders.shaded.folialib.api.region.Region;
+import com.tcoded.folialib.api.FoliaLib;
+import com.tcoded.folialib.api.region.Region;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;
 
-/**
- * PlaceholderAPI expansion для отображения TPS и MSPT региона Folia,
- * в котором находится игрок.
- */
 public class FoliaExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
@@ -28,12 +24,12 @@ public class FoliaExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "YourName"; // Замените на ваше имя
+        return "YourName";
     }
 
     @Override
     public String getIdentifier() {
-        return "folia"; // Используйте плейсхолдеры с префиксом %folia_...
+        return "folia";
     }
 
     @Override
@@ -41,11 +37,6 @@ public class FoliaExpansion extends PlaceholderExpansion {
         return plugin.getDescription().getVersion();
     }
 
-    /**
-     * Обработка плейсхолдеров:
-     * - %folia_region_tps%  - TPS региона (округлённый)
-     * - %folia_region_mspt% - MSPT региона (с 2 знаками после запятой)
-     */
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
         if (player == null) return "";
@@ -63,10 +54,6 @@ public class FoliaExpansion extends PlaceholderExpansion {
         }
     }
 
-    /**
-     * Получение статистики региона Folia по локации игрока.
-     * Возвращает null, если регион не найден или API недоступно.
-     */
     private RegionStats getRegionStatsForPlayer(Player player) {
         FoliaLib foliaLib = FoliaLib.getInstance();
         Region region = foliaLib.getRegionManager().getRegionAt(player.getLocation());
@@ -78,32 +65,17 @@ public class FoliaExpansion extends PlaceholderExpansion {
         return new RegionStats(tps, mspt);
     }
 
-    /**
-     * Окрашивание TPS:
-     * - >=18 зелёный
-     * - >=15 жёлтый
-     * - иначе красный
-     */
     private String colorizeTps(double tps) {
         int rounded = (int) Math.round(tps);
         String color = rounded >= 18 ? "§a" : (rounded >= 15 ? "§e" : "§c");
         return color + rounded;
     }
 
-    /**
-     * Окрашивание MSPT:
-     * - <=50 зелёный
-     * - <=100 жёлтый
-     * - иначе красный
-     */
     private String colorizeMspt(double mspt) {
         String color = mspt <= 50 ? "§a" : (mspt <= 100 ? "§e" : "§c");
         return color + df.format(mspt);
     }
 
-    /**
-     * Внутренний класс для хранения статистики региона.
-     */
     private static class RegionStats {
         final double tps;
         final double mspt;
