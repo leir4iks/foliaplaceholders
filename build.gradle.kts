@@ -18,8 +18,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.4-R0.1") // попробуйте без SNAPSHOT
-
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
     compileOnly("dev.folia:folia-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
