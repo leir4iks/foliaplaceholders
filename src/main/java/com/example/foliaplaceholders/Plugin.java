@@ -15,4 +15,10 @@ public class Plugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
     }
+
+    // При необходимости можно добавить onDisable
+    @Override
+    public void onDisable() {
+        getLogger().info("foliaplaceholders disabled.");
+    }
 }
