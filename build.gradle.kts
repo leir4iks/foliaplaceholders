@@ -22,18 +22,15 @@ dependencies {
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     shadowJar {
         archiveBaseName.set("foliaplaceholders")
-        archiveVersion.set("1.0.0")
+        archiveVersion.set(version)
         archiveClassifier.set("")
         archiveExtension.set("jar")
-        // relocate("me.clip.placeholderapi", "com.foliaplaceholders.shaded.placeholderapi")
         mergeServiceFiles()
     }
+}
+
 
     build {
         dependsOn(shadowJar)
