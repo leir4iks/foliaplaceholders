@@ -1,9 +1,7 @@
 package com.example.foliaplaceholders;
 
-import dev.folia.api.FoliaAPI;
-import dev.folia.api.region.Region;
-import com.example.foliaplaceholders.lib.folialib.api.FoliaLib;
-import com.example.foliaplaceholders.lib.folialib.api.region.Region;
+import com.example.foliaplaceholders.shaded.folialib.api.FoliaLib;
+import com.example.foliaplaceholders.shaded.folialib.api.region.Region;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,9 +55,9 @@ public class FoliaExpansion extends PlaceholderExpansion {
 
         switch (identifier) {
             case "region_tps":
-                return colorizeTps(stats.tps5s);
+                return colorizeTps(stats.tps);
             case "region_mspt":
-                return colorizeMspt(stats.mspt5s);
+                return colorizeMspt(stats.mspt);
             default:
                 return null;
         }
@@ -70,14 +68,14 @@ public class FoliaExpansion extends PlaceholderExpansion {
      * Возвращает null, если регион не найден или API недоступно.
      */
     private RegionStats getRegionStatsForPlayer(Player player) {
-        Region region = FoliaAPI.getRegionAt(player.getLocation());
+        FoliaLib foliaLib = FoliaLib.getInstance();
+        Region region = foliaLib.getRegionManager().getRegionAt(player.getLocation());
         if (region == null) return null;
 
-        // Получаем усреднённые значения за 5 секунд
-        double tps5s = region.getTps5s();
-        double mspt5s = region.getMspt5s();
+        double tps = region.getTps5s();
+        double mspt = region.getMspt5s();
 
-        return new RegionStats(tps5s, mspt5s);
+        return new RegionStats(tps, mspt);
     }
 
     /**
@@ -107,12 +105,12 @@ public class FoliaExpansion extends PlaceholderExpansion {
      * Внутренний класс для хранения статистики региона.
      */
     private static class RegionStats {
-        final double tps5s;
-        final double mspt5s;
+        final double tps;
+        final double mspt;
 
-        public RegionStats(double tps5s, double mspt5s) {
-            this.tps5s = tps5s;
-            this.mspt5s = mspt5s;
+        public RegionStats(double tps, double mspt) {
+            this.tps = tps;
+            this.mspt = mspt;
         }
     }
 }
