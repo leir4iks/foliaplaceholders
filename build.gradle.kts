@@ -31,8 +31,12 @@ tasks {
         archiveVersion.set("1.0.0")
         archiveClassifier.set("")
         archiveExtension.set("jar")
-        // relocate("me.clip.placeholderapi", "com.Folia-Expansion.shaded.placeholderapi")
+        // relocate("me.clip.placeholderapi", "com.example.shaded.placeholderapi")
         mergeServiceFiles()
+        dependencies {
+            exclude(dependency("me.clip:placeholderapi"))
+            exclude(dependency("dev.folia:folia-api"))
+        }
     }
 
     build {
